@@ -60,6 +60,10 @@ export const RegisterPage = styled.div`
           background-color: transparent;
           border: 2px solid ${({ theme }) => theme.colors.third.solid};
         }
+        &:disabled{
+          pointer-events: none;
+          background-color: ${({ theme }) => theme.colors.light.weak};
+        }
       }
     }
   }

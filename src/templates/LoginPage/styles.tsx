@@ -41,7 +41,7 @@ export const LoginPage = styled.div`
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      a{
+      a, button{
         border-radius: .7rem;
         height: 55px;
         display: inline-flex;
@@ -57,6 +57,10 @@ export const LoginPage = styled.div`
           color: ${({ theme }) => theme.colors.third.solid};
           background-color: transparent;
           border: 2px solid ${({ theme }) => theme.colors.third.solid};
+        }
+        &:disabled{
+          pointer-events: none;
+          background-color: ${({ theme }) => theme.colors.light.weak};
         }
       }
     }

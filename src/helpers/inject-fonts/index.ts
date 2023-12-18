@@ -1,4 +1,4 @@
-import { FontGoogle } from "./types";
+import { FontGoogle } from "./interfaces";
 
 export default function injectFonts(fonts: FontGoogle[]) {
   const stringFontsMap = fonts
