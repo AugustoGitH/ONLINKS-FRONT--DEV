@@ -14,8 +14,17 @@ declare module "styled-components" {
     };
     limits: {
       content: string;
+      panel: string;
     };
     colors: {
+      alert: {
+        solid: string;
+        weak: string;
+      };
+      dark: {
+        solid: string;
+        weak: string;
+      };
       primary: {
         solid: string;
         weak: string;

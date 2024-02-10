@@ -1,3 +1,5 @@
+import { Permission } from "@/settings/permissions/types";
+
 export interface UserPublic {
   _id: string;
   username: string;
@@ -5,5 +7,5 @@ export interface UserPublic {
   email: string;
   createdAt: string;
   updatedAt: string;
-  permissions: string[];
+  permissions: Permission[];
 }

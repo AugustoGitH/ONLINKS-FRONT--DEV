@@ -1,3 +1,4 @@
+import Button from "@/components/Button"
 import Input from "@/components/Input"
 import { useRegister } from "@/hooks/useRegister"
 import Link from "next/link"
@@ -16,8 +17,8 @@ export default function StepTwoRegister({ username }: StepTwoRegisterProps) {
       <form onSubmit={onSubmit} noValidate>
         <Input autoComplete="off" label="Nome" {...registerInput("name")} error={!!errors?.name} helperText={errors?.name?.message} />
         <Input autoComplete="off" label="Email"  {...registerInput("email")} error={!!errors?.email} helperText={errors?.email?.message} />
-        <Input autoComplete="off" label="Senha" {...registerInput("password")} error={!!errors?.password} helperText={errors?.password?.message} />
-        <button type="submit" disabled={registering}>{registering ? "Registrando..." : "Registrar"}</button>
+        <Input autoComplete="off" label="Senha" type="password" {...registerInput("password")} error={!!errors?.password} helperText={errors?.password?.message} />
+        <Button variant="underline" type="submit" disabled={registering}>{registering ? "Registrando..." : "Registrar"}</Button>
       </form>
     </div>
   )

@@ -31,7 +31,7 @@ export const useLogin = () => {
     setLoggingIn(false);
     if (logged) {
       toast.success(message);
-      await router.push(navigationRoutes.panel.route);
+      await router.push(navigationRoutes.linkPages.route);
       reset();
       return;
     }

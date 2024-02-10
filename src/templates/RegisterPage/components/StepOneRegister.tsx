@@ -1,3 +1,4 @@
+import Button from "@/components/Button"
 import Icon from "@/components/Icon"
 import Input from "@/components/Input"
 import normalizeString from "@/helpers/normalize-string"
@@ -89,7 +90,7 @@ export default function StepOneRegister({ onAdvance }: StepOneProps) {
             helperText: "Este nome já está em uso!"
           })}
         />
-        <button disabled={!!usernameAvailable.isLoading || !usernameAvailable.available} onClick={handleNextStep} type="button">Próximo</button>
+        <Button variant="underline" disabled={!!usernameAvailable.isLoading || !usernameAvailable.available} onClick={handleNextStep} type="button">Próximo</Button>
       </form>
       <p className="sub-helper">Já tem uma conta? <Link href={navigationRoutes.login.route}>Entrar</Link></p>
     </div>

@@ -23,15 +23,24 @@ const initialTheme: DefaultTheme = {
   },
   limits: {
     content: "800px",
+    panel: "1500px",
   },
   colors: {
+    alert: {
+      solid: "#f8e80b",
+      weak: "",
+    },
+    dark: {
+      solid: "#04010e",
+      weak: "",
+    },
     danger: {
       solid: "#FF1E1E",
       weak: "",
     },
     primary: {
       solid: "#13111C",
-      weak: "",
+      weak: "#1a1825",
     },
     secondary: {
       solid: "#0061FF",
@@ -39,7 +48,7 @@ const initialTheme: DefaultTheme = {
     },
     third: {
       solid: "#E384FF",
-      weak: "",
+      weak: "#b04acf",
     },
     success: {
       solid: "#42946E",

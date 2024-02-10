@@ -13,6 +13,7 @@ export const Button = styled.button<ButtonProps>`
   border-radius: .4rem;
   text-transform: uppercase;
   transition: .2s ease;
+  text-align: center;
   &:hover{
     opacity: 1;
     ${({ variant, theme }) => variant === "solid" ? `
@@ -21,6 +22,10 @@ export const Button = styled.button<ButtonProps>`
       background-color: ${theme.colors.third.solid};
       color: ${theme.colors.primary.solid};
     `
+  }
+  &:disabled{
+    pointer-events: none;
+    opacity: .8;
   }
   }
 `

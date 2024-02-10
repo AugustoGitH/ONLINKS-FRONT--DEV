@@ -28,6 +28,18 @@ export const Input = styled.div<InputProps>`
     width: 100%;
     position: relative;
     height: 60px;
+    .btn-toggle-pass{
+      all: unset;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 1rem;
+      cursor: pointer;
+
+      i{
+        color: ${({ theme, error, success, loading }) => setColor(theme, { error, loading, success }, theme.colors.light.weak)};
+      }
+    }
     label {
       position: absolute;
       left: 2rem;

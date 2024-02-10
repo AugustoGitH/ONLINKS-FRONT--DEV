@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
     list-style: none;
   }
   body{
-    background-color: red;
+    background-color: ${({ theme }) => theme.colors.primary.solid};
     color: ${({ theme }) => theme.colors.light.solid};
     font-family: ${({ theme }) => theme.font.family.Poppins};
   }

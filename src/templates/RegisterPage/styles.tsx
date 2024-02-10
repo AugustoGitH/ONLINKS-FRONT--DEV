@@ -43,28 +43,7 @@ export const RegisterPage = styled.div`
       flex-direction: column;
       gap: 1.5rem;
       margin-top: 2rem;
-      button, a{
-        border-radius: .7rem;
-        height: 55px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        font-size: ${({ theme }) => theme.font.size.paragraphs.sm[0]};
-        background-color: ${({ theme }) => theme.colors.third.solid};
-        color: ${({ theme }) => theme.colors.primary.solid};
-        font-weight: bold;
-        border: 2px solid transparent;
-        transition: .2s ease;
-        &:hover{
-          color: ${({ theme }) => theme.colors.third.solid};
-          background-color: transparent;
-          border: 2px solid ${({ theme }) => theme.colors.third.solid};
-        }
-        &:disabled{
-          pointer-events: none;
-          background-color: ${({ theme }) => theme.colors.light.weak};
-        }
-      }
+
     }
   }
 `

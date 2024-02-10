@@ -21,9 +21,10 @@ export const Header = styled.header`
       font-size: ${({ theme }) => theme.font.size.headings.h3[0]};
       display: inline-flex;
       align-items: center;
-      i{
+      span{
         color: ${({ theme }) => theme.colors.third.solid};
       }
+     
     }
 
     nav{

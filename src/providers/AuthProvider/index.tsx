@@ -8,9 +8,9 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children, credentials }: AuthProviderProps) {
-  console.log({ credentials })
+
   return (
-    <AuthContext.Provider value={null}>
+    <AuthContext.Provider value={{ user: credentials }}>
       {children}
     </AuthContext.Provider>
   )

@@ -4,6 +4,7 @@ import Link from "next/link"
 import Input from "@/components/Input"
 import { navigationRoutes } from "@/settings/navigation/routes"
 import { useLogin } from "@/hooks/useLogin"
+import Button from "@/components/Button"
 
 export default function LoginPage() {
   const { errors, loggingIn, onSubmit, registerInput } = useLogin()
@@ -17,8 +18,8 @@ export default function LoginPage() {
         </div>
         <form onSubmit={onSubmit} noValidate>
           <Input autoComplete="off" label="Email" {...registerInput("email")} helperText={errors?.email?.message} error={!!errors?.email} />
-          <Input autoComplete="off" label="Senha" {...registerInput("password")} helperText={errors?.password?.message} error={!!errors?.password} />
-          <button type="submit" disabled={loggingIn}>{loggingIn ? "Entrando..." : "Entrar"}</button>
+          <Input autoComplete="off" label="Senha" type="password" {...registerInput("password")} helperText={errors?.password?.message} error={!!errors?.password} />
+          <Button variant="underline" type="submit" disabled={loggingIn}>{loggingIn ? "Entrando..." : "Entrar"}</Button>
         </form>
       </div>
     </S.LoginPage>
