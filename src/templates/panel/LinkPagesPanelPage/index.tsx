@@ -2,92 +2,75 @@ import VerticalNavBarPanel from "@/components/VerticalNavBarPanel"
 import * as S from "./styles"
 import LinkPageInput from "@/components/LinkPageInput"
 import { useAuthContext } from "@/contexts/AuthContext"
-import calculateLinkCountPermissions from "@/helpers/permissions/calculateLinkCountPermissions"
+import calculateLinkCountPermissions from "@/helpers/permissions/calculate-link-count-permissions"
 import Icon from "@/components/Icon"
-import { useState } from "react"
-import { ValueLinkPageInput } from "@/components/LinkPageInput/types"
-import { v4 as uuid } from 'uuid'
-import calculateLinkPageCountPermissions from "@/helpers/permissions/calculateLinkPageCountPermissions"
-import Image from "next/image"
+import { useEffect, useState } from "react"
+
+import { api } from "@/settings/api/axios"
+import TitleItem from "@/components/TitleItem"
+import useLinkPagesPanel from "./hooks/useLinkPagesPanel"
+import ModalIcons from "@/components/ModalIcons"
 import HeaderLinkPage from "./components/HeaderLinkPage"
+import { Dialog } from "@/components/Dialog"
 
 
 
 
 export default function LinkPagesPanelPage() {
   const { user } = useAuthContext()
-  const [linkPages, setLinkPages] = useState<Record<string, ValueLinkPageInput & { order: number }>>({})
+  const { addLinkPage, errors, dialogDeleteLinkPage, handleToggleShowDialogDeleteLinkPage, assignDefaultLinkPage, saveLinkPage, deleteLinkPage, changeLinkPage, isLimitLinkPages,
+    linkPages } = useLinkPagesPanel(user)
 
 
-  const isLimitLinkPages = Object.keys(linkPages).length + 1 <= calculateLinkPageCountPermissions(user!.permissions)
 
-  const editLinkPage = (id: string, value: ValueLinkPageInput) => {
-    setLinkPages(prevLinkPages => ({
-      ...prevLinkPages,
-      [id]: {
-        ...prevLinkPages[id],
-        ...value
-      }
-    }))
-  }
+  // useEffect(() => {
+  //   api.get('/link-page/restrict/v1').then(data => {
+  //     console.log(data)
+  //   })
+  // }, [])
 
 
-  const addLinkPage = () => {
-    setLinkPages(prevLinkPages => {
-      const quantityLinkPages = Object.keys(prevLinkPages).length
-      return {
-        ...prevLinkPages,
-        [uuid()]: {
-          banner: null,
-          description: null,
-          isDefault: quantityLinkPages + 1 === 1,
-          links: null,
-          profile: null,
-          subTitle: null,
-          title: null,
-          order: quantityLinkPages + 1
-        }
-      }
-    })
-  }
 
-  const deleteLinkPage = (id: string) => {
-    setLinkPages(prevLinkPages => Object.fromEntries(Object.entries(prevLinkPages).filter(([idV]) => idV !== id)))
-  }
 
-  const profileDefault = Object.entries(linkPages).find(([id, { isDefault }]) => isDefault)?.[1]
-
-  console.log(linkPages)
 
   return (
     <S.LinkPagesPanelPage>
       <div className="content">
         <VerticalNavBarPanel>
           <div className="dash">
-
-            {/* <h3>Página de Links</h3> */}
-            <HeaderLinkPage
-              banner={{
-                src: undefined,
-                alt: 'banner'
+            <h3>Página de Links</h3>
+            {/* <HeaderLinkPage
+              def={{
+                banner: {
+                  src: profileDefault?.banner as File,
+                  alt: ''
+                },
+                profile: {
+                  src: profileDefault?.profile as File,
+                  alt: ''
+                }
               }}
-              profile={{
-                default: profileDefault ? {
-                  src: profileDefault.profile ?? undefined,
-                  alt: 'profile'
-                } : undefined
-              }}
-
-            />
+            /> */}
             <div className="link-pages-grid">
               {
-                Object.entries(linkPages).map(([id, value]) => (
+                linkPages && Object.entries(linkPages).map(([id, linkPage]) => (
                   <LinkPageInput
-                    onChange={value => editLinkPage(id, value)}
+                    errors={errors[id]}
+                    onSave={(linkPage) => saveLinkPage(id, linkPage)}
+                    onAssignDefault={state => assignDefaultLinkPage(id, state)}
+                    onChange={value => changeLinkPage(id, value)}
                     key={id}
-                    value={value}
+                    value={{
+                      banner: linkPage.banner,
+                      description: linkPage.description,
+                      isDefault: linkPage.isDefault,
+                      links: linkPage.links,
+                      profile: linkPage.profile,
+                      subTitle: linkPage.subTitle,
+                      title: linkPage.title
+                    }}
                     maxLinkCreation={calculateLinkCountPermissions(user!.permissions)}
-                    onDelete={() => deleteLinkPage(id)}
+                    onDelete={() => handleToggleShowDialogDeleteLinkPage(id)}
                   />
                 ))
               }
@@ -95,9 +78,11 @@ export default function LinkPagesPanelPage() {
               {
                 isLimitLinkPages && (
                   <div className='template-add-link-page'>
-                    <button onClick={addLinkPage}>
-                      <Icon icon={'bx bx-plus'} />
-                    </button>
+                    <TitleItem title="ola">
+                      <button onClick={addLinkPage}>
+                        <Icon icon={'bx bx-plus'} />
+                      </button>
+                    </TitleItem>
                   </div>
                 )
               }
@@ -105,6 +90,13 @@ export default function LinkPagesPanelPage() {
           </div>
         </VerticalNavBarPanel>
       </div>
+      <Dialog.Card open={dialogDeleteLinkPage.show}>
+        <Dialog.Title>Você deseja deletar está página de links?</Dialog.Title>
+        <Dialog.Actions>
+          <Dialog.Button onClick={() => deleteLinkPage()}>Sim</Dialog.Button>
+          <Dialog.Button onClick={() => handleToggleShowDialogDeleteLinkPage()} color="danger">Não</Dialog.Button>
+        </Dialog.Actions>
+      </Dialog.Card>
     </S.LinkPagesPanelPage>
   )
 }

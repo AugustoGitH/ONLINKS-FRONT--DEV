@@ -16,10 +16,25 @@ export const VerticalNavBarPanel = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    .icon-onlink{
-      font-size: 3rem;
-      color: ${({ theme }) => theme.colors.third.solid};
+    .head-nav{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      span{
+        margin-top: .4rem;
+        text-align: center;
+        font-size: ${({ theme }) => theme.font.size.paragraphs.xsm[0]};
+        line-height: ${({ theme }) => theme.font.size.paragraphs.xsm[1]};
+        strong{
+          color: ${({ theme }) => theme.colors.third.solid};
+        }
+      }
+      .icon-onlink{
+        font-size: 3rem;
+        color: ${({ theme }) => theme.colors.third.solid};
+      }
     }
+    
     .controls-navigation{
       margin-top: 3rem;
       width: 100%;
@@ -32,12 +47,12 @@ export const VerticalNavBarPanel = styled.div`
         color: ${({ theme }) => theme.colors.third.solid};
         border-right: 4px solid ${({ theme }) => theme.colors.third.solid};
       }
+
        li a{
         border-right: 4px solid transparent;
-       
+        
         display: flex;
         width: 100%;
-        gap: 1rem;
         opacity: .8;
 
         
@@ -47,9 +62,19 @@ export const VerticalNavBarPanel = styled.div`
         font-weight: bold;
         transition: .2s;
         font-size: ${({ theme }) => theme.font.size.paragraphs.xsm[0]};
-
+        &:hover{
+          border-right: 4px solid ${({ theme }) => theme.colors.third.solid};
+          color: ${({ theme }) => theme.colors.third.solid};
+        }
         .icon{
           font-size: 1.1rem;
+        }
+        span{
+          width: 80%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 1rem;
         }
       }
     }

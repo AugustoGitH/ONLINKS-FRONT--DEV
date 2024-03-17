@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 
 export const HeaderLinkPage = styled.div`
- margin-bottom: calc(90px + 1rem);
+  margin-bottom: calc(90px + 1rem);
         position: relative;
 
         .banner{
@@ -85,6 +85,7 @@ export const LinkPagesPanelPage = styled.div`
       padding: 2rem;
    
       .link-pages-grid{
+        margin-top: 2rem;
         width: 100%;
         gap: 2rem;
         display: grid;

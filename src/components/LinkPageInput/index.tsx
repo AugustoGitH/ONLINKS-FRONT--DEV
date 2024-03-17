@@ -7,81 +7,46 @@ import BannerInput from "./components/BannerInput"
 import ProfileInput from "./components/ProfileInput"
 import profile from "@/assets/Design sem nome.png"
 import TextInput from "./components/TextInput"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import ButtonInput from "./components/ButtonInput"
 import Icon from "../Icon"
-import { ValueLinkPageInput } from "./types"
-
-
+import { ErrorsLinkPage, ValueLinkPageInput } from "./types"
+import useLinkPageInput from "./hooks/useLinkPageInput"
 
 interface LinkPageInputProps {
   maxLinkCreation?: number,
   value?: ValueLinkPageInput,
   onChange?: (value: ValueLinkPageInput) => void,
   onDelete?: () => void,
-  onAssignDefault?: (state: boolean) => void
+  onAssignDefault?: (state: boolean) => void,
+  onSave?: (value?: ValueLinkPageInput) => Promise<boolean>,
+  errors?: ErrorsLinkPage
 }
 
-export default function LinkPageInput({ onAssignDefault = () => { }, onDelete = () => { }, maxLinkCreation = 1, value, onChange = () => { } }: LinkPageInputProps) {
 
 
-  const isLimited = value?.links === null || value?.links && Object.keys(value.links).length + 1 <= maxLinkCreation
+export default function LinkPageInput({
+  onSave = async () => false,
+  onAssignDefault = () => { },
+  onDelete = () => { },
+  maxLinkCreation = 1,
+  value,
+  errors,
+  onChange = () => { } }: LinkPageInputProps) {
+  const [idProfile, idBanner] = [useId(), useId()]
+  const { addLink, isLimited, assignDefault, deleteLink, handleSaveLinkPage, handleToggleShowSaveConfirm, selectInput, showSaveConfirm } = useLinkPageInput({
+    events: {
+      onAssignDefault,
+      onChange,
+      onSave
+    },
+    maxLinkCreation,
+    value
+  })
 
-
-  const selectInput = (prop: string, valueInp: any) => {
-    if (!value) return
-    onChange({
-      ...value,
-      [prop]: valueInp
-    })
-
-  }
-
-
-
-  const addLink = () => {
-    if (!isLimited || !value) return
-    onChange({
-      ...value,
-      links: {
-        ...(value.links ?? {}),
-        [uuid()]: {
-          href: '',
-          title: '',
-          order: value.links ? Object.keys(value.links).length + 1 : 1
-        }
-      }
-    })
-
-  }
-
-  const assignDefault = () => {
-    if (!value) return
-    onChange({
-      ...value,
-      isDefault: !value?.isDefault
-    })
-
-  }
-
-  const deleteButton = (id: string) => {
-    if (!value) return
-    onChange({
-      ...value,
-      ...(value.links && {
-        links: Object.fromEntries(Object.entries(value.links).filter(([idV]) => idV !== id))
-      })
-    })
-  }
 
   return (
     <S.LinkPageInput>
-
-      {
-        value?.isDefault && (
-          <span className='alert-default-helper'>~ padrão ~</span>
-        )
-      }
       <div className="controls">
         <button className={`btn-default ${value?.isDefault ? 'selected' : ''}`} onClick={() => assignDefault()} >
           <Icon icon='bx bxs-crown' />
@@ -94,33 +59,70 @@ export default function LinkPageInput({ onAssignDefault = () => { }, onDelete = 
 
       <header>
         <BannerInput
+          error={!!errors?.banner}
+          helperText={errors?.banner?.message}
           src={value?.banner as string ?? undefined}
+          id={idBanner}
           maxSizeInBytes={5 * 1024 * 1024}
           onChange={file => selectInput("banner", file)}
         />
         <ProfileInput
+          error={!!errors?.profile}
+          helperText={errors?.profile?.message}
           src={value?.profile as string ?? undefined}
+          id={idProfile}
           maxSizeInBytes={5 * 1024 * 1024}
           onChange={file => selectInput("profile", file)}
         />
       </header>
       <div className="description">
-        <TextInput placeholder="Insira o Título" maxLength={40} text={value?.title || ''} type="h1" onChange={value => selectInput("title", value)} />
-        <TextInput placeholder='Insira o Subtítulo' maxLength={50} text={value?.subTitle || ''} type="h2" onChange={value => selectInput("subTitle", value)} />
-        <TextInput placeholder='Insira a Descrição' style={{ marginTop: ".4rem" }} onChange={value => selectInput("description", value)} text={value?.description || ''} type="p" />
+        <TextInput
+          error={!!errors?.title}
+          helperText={errors?.title?.message}
+          placeholder="Insira o Título"
+          maxLength={40}
+          text={value?.title || ''}
+          type="h1"
+          onChange={value => selectInput("title", value)}
+        />
+        <TextInput
+          error={!!errors?.subTitle}
+          helperText={errors?.subTitle?.message}
+          placeholder='Insira o Subtítulo'
+          maxLength={50}
+          text={value?.subTitle || ''}
+          type="h2"
+          onChange={value => selectInput("subTitle", value)}
+        />
+        <TextInput
+          error={!!errors?.description}
+          helperText={errors?.description?.message}
+          placeholder='Insira a Descrição'
+          style={{ marginTop: ".4rem" }}
+          onChange={value => selectInput("description", value)}
+          text={value?.description || ''} type="p"
+        />
       </div>
       <div className="btns">
         {
           value?.links && Object.entries(value.links).map(([id, link]) => (
-            <ButtonInput onDelete={() => deleteButton(id)} onChange={valueCh => selectInput('links', {
-              ...(value?.links ?? {}),
-              [id]: {
-                ...(value.links && {
-                  ...link,
-                  ...valueCh
-                })
-              }
-            })} value={link} key={id} maxLengthTitle={32} />
+            <ButtonInput
+              onDelete={() => deleteLink(id)}
+              onChange={valueCh => selectInput('links', {
+                ...(value?.links ?? {}),
+                [id]: {
+                  ...(value.links && {
+                    ...link,
+                    ...valueCh
+                  })
+                }
+              })}
+              error={!!errors?.links?.[id]}
+              helperText={errors?.links?.[id]?.message}
+              value={link}
+              key={id}
+              maxLengthTitle={33}
+            />
           ))
         }
         {
@@ -133,6 +135,15 @@ export default function LinkPageInput({ onAssignDefault = () => { }, onDelete = 
 
 
       </div>
+      {
+        showSaveConfirm && (
+          <div className='btns-confirm-save'>
+            <button className="btn-save" onClick={handleSaveLinkPage}>Salvar</button>
+            <button className="btn-cancel" onClick={handleToggleShowSaveConfirm}>Cancelar</button>
+          </div>
+        )
+      }
+
     </S.LinkPageInput>
   )
 }

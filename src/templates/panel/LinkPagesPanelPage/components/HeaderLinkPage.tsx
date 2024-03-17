@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import * as S from '../styles'
 import Icon from '@/components/Icon'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { extractBase64FromFile } from '@/helpers/extract-base64-from-file'
 
 
 interface ImageProps<T> {
@@ -37,12 +38,66 @@ const HeaderLinkPage = ({ def, secondary }: HeaderLinkPageProps) => {
       }
     },
   })
+
+  useEffect(() => {
+    const test = (src: File | string | undefined) => {
+      if (src && typeof src !== 'string') {
+        extractBase64FromFile(src, (base64) => {
+          setPreview(prev => ({
+            ...prev,
+            def: {
+              ...prev.def,
+              banner: {
+                alt: '',
+                src: base64 as string
+              },
+
+            }
+          }))
+        })
+      }
+    }
+    if (def.banner.src && typeof def.banner.src !== 'string') {
+      extractBase64FromFile(def.banner.src, (base64) => {
+        setPreview(prev => ({
+          ...prev,
+          def: {
+            ...prev.def,
+            banner: {
+              alt: '',
+              src: base64 as string
+            },
+
+          }
+        }))
+      })
+    }
+    if (def.profile.src && typeof def.profile.src !== 'string') {
+      extractBase64FromFile(def.profile.src, (base64) => {
+        setPreview(prev => ({
+          ...prev,
+          def: {
+            ...prev.def,
+            profile: {
+              alt: '',
+              src: base64 as string
+            },
+
+          }
+        }))
+      })
+    }
+
+
+    console.log(def)
+  }, [def])
+
   return (
     <S.HeaderLinkPage>
       <div className="banner">
         {
-          banner.src ? (
-            <Image width={500} height={100} src={banner.src} alt={banner.alt} />
+          preview.def.banner.src ? (
+            <Image width={500} height={100} src={preview.def.banner.src} alt={preview.def.banner.alt} />
           ) : (
             <Icon className="icon-user" icon="bx bxs-image" />
           )
@@ -51,11 +106,11 @@ const HeaderLinkPage = ({ def, secondary }: HeaderLinkPageProps) => {
       </div>
       <div className="profiles-row">
         {
-          profile.default && (
+          preview.def.profile && (
             <div className="profile main">
               {
-                profile.default.src ? (
-                  <Image width={100} height={100} src={profile.default.src} alt={profile.default.alt} />
+                preview.def.profile.src ? (
+                  <Image width={100} height={100} src={preview.def.profile.src} alt={preview.def.profile.alt} />
                 ) : (
                   <Icon className="icon-user" icon="bx bxs-user" />
                 )
@@ -66,11 +121,11 @@ const HeaderLinkPage = ({ def, secondary }: HeaderLinkPageProps) => {
         }
 
         {
-          profile.secondary?.map((props, index) => (
+          preview.secondary?.map((props, index) => (
             <div className="profile" key={`profile-img-header${index}`}>
               {
-                props.src ? (
-                  <Image width={100} height={100} src={props.src} alt={props.alt} />
+                props.profile.src ? (
+                  <Image width={100} height={100} src={props.profile.src} alt={props.profile.alt} />
                 ) : (
                   <></>
                 )

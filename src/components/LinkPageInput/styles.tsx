@@ -1,24 +1,15 @@
+import scaleUpPresence from "@/keyframes/scale-up-presence";
 import styled from "styled-components";
 
 export const LinkPageInput = styled.div`
   position: relative;
-  .alert-default-helper{
-    position: absolute;
-    left: .55rem;
-    top: -.55rem;
-    z-index: 10;
-    font-size: ${({ theme }) => theme.font.size.paragraphs.xxsm[0]};
-    font-weight: bold;
-    color: ${({ theme }) => theme.colors.alert.solid};
-    text-transform: uppercase;
-  }
+  padding: 0 0 2rem 0;
+  animation: ${scaleUpPresence} .3s ease-in-out;
   .controls{
-    top: .8rem;
-    left: -.5rem;
-    position: absolute;
-    z-index: 10;
+    padding: .5rem 0;
+    
     display: flex;
-    flex-direction: column;
+
     gap: .3rem;
     button.selected{
       opacity: 1;
@@ -79,6 +70,7 @@ export const LinkPageInput = styled.div`
       line-height: ${({ theme }) => theme.font.size.paragraphs.xxsm[1]};
     }
   }
+
   .btns{
     width: 100%;
     display: flex;
@@ -110,6 +102,34 @@ export const LinkPageInput = styled.div`
       }
     }
   }
+  .btns-confirm-save{
+    animation: ${scaleUpPresence} .3s ease-in-out;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    gap: .5rem;
+    button{
+      font-size: ${({ theme }) => theme.font.size.paragraphs.xxsm[0]};
+      text-transform: uppercase;
+      font-weight: bold;
+    
+      color: ${({ theme }) => theme.colors.dark.solid};
+      padding: .3rem .6rem;
+      border-radius: .2rem;
+      opacity: .5;
+      transition: .2s;
+      &:hover{
+        opacity: 1;
+      }
+    }
+    button.btn-save{
+      background-color: ${({ theme }) => theme.colors.third.solid};
+    }
+    button.btn-cancel{
+      background-color: ${({ theme }) => theme.colors.danger.solid};
+    }
+  }
 `;
 
 interface TextInputProps {
@@ -134,7 +154,6 @@ export const TextInput = styled.div<TextInputProps>`
   }
   input, textarea{
     all: unset;
-
     width: 100%;
     
     text-align: center;
@@ -160,8 +179,14 @@ export const ButtonInput = styled.div`
   align-items: center;
   position: relative;
   gap: .3rem;
+  animation: ${scaleUpPresence} .3s ease-in-out;
   &:hover .controls-edit{
     opacity: 1;
+  }
+  .modal-select-icons{
+    position: absolute;
+    top: 1rem;
+    
   }
 
   .controls-edit{
@@ -223,9 +248,20 @@ export const ButtonInput = styled.div`
           width: 100%;
           text-align: center;
         }
-        .icon{
-          font-size: 1.3rem;
+    
+        .btn-add-icon{
+         
+          display: inline-flex;
+          font-size: 1rem;
+          transition: .2s;
+          .icon-add-icons{
+            opacity: .2;
+          }
+          &:hover{
+            opacity: 1;
+          }
         }
+        
    }
 `
 
@@ -277,7 +313,7 @@ export const ProfileInput = styled.div`
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  overflow: hidden;
+  
   flex: none;
   display: flex;
   justify-content: center;
@@ -292,6 +328,7 @@ export const ProfileInput = styled.div`
   .icon-user{
     color: ${({ theme }) => theme.colors.light.weak};
     font-size: 2rem;
+    pointer-events: none;
   }
   label {
     display: flex;
@@ -304,6 +341,7 @@ export const ProfileInput = styled.div`
     opacity: 0;
     transition: 0.2s;
     background-color: #00000036;
+    border-radius: 50%;
     &:hover {
       opacity: 1;
     }
@@ -315,8 +353,57 @@ export const ProfileInput = styled.div`
     }
   }
   img {
+    border-radius: 50%;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 `;
+
+
+export const AlertHelperText = styled.div`
+  position: absolute;
+  left: .6rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-size: .9rem;
+  .helper-text{
+    position: absolute;
+ 
+    top: 1.5rem;
+    left: 0rem;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    font-size: calc(${({ theme }) => theme.font.size.paragraphs.xxsm[0]} - .1rem);
+    line-height: calc(${({ theme }) => theme.font.size.paragraphs.xxsm[0]} - .1rem);
+    background-color: ${({ theme }) => theme.colors.danger.solid};
+    min-width: 140px;
+    padding: .5rem .6rem;
+    transition: .2s;
+    border-radius: .4rem;
+    &::after{
+      position: absolute;
+      content: '';
+      width: 5px;
+      height: 5px;
+      transform: rotate(135deg);
+      background-color: ${({ theme }) => theme.colors.danger.solid};
+      left: .5rem;
+      top: -2.5px;
+    }
+  }
+
+  .icon-error:hover ~  .helper-text{
+    opacity: 1;
+    pointer-events: visible;
+  }
+
+  .icon-error{
+    color: ${({ theme }) => theme.colors.danger.solid};
+    cursor: pointer;
+    transition: .2s ease; 
+  }
+
+`

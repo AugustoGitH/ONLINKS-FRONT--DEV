@@ -11,3 +11,12 @@ export interface LinkPagePublic {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateLinkPage {
+  title: string;
+  isDefault: boolean;
+  subTitle?: string;
+  description?: string;
+  profile?: string;
+  banner?: string;
+}

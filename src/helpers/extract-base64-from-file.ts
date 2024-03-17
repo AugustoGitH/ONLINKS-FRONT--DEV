@@ -8,3 +8,13 @@ export const extractBase64FromFile = (
   };
   reader.readAsDataURL(file);
 };
+
+export const extractBase64FromFileAsync = (file: File): Promise<string> => {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      res(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  });
+};

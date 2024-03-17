@@ -10,5 +10,8 @@ export const PanelPage = styled.section`
   min-height: 100vh;
   .content{
     width: ${({ theme }) => theme.limits.panel};
+    .dash{
+      width: 100%;
+      padding: 2rem;}
   }
 `

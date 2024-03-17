@@ -6,14 +6,14 @@ import { useLinksQuery } from "@/queries/useLinksQuery"
 
 export default function PanelPage() {
   const { user } = useAuthContext()
-  const { data } = useLinkPagesQuery()
 
-  console.log(data)
   return (
     <S.PanelPage>
       <div className="content">
         <VerticalNavBarPanel>
-          content
+          <div className="dash">
+            <h3>Painel</h3>
+          </div>
         </VerticalNavBarPanel>
       </div>
     </S.PanelPage>
