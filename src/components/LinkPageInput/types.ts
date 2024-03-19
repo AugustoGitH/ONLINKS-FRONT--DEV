@@ -9,6 +9,7 @@ export interface ValueLinkPageInput {
   banner: File | string | null;
   isDefault: boolean;
   links: Record<string, ValueLinkInput> | null;
+  order: number;
 }
 
 export interface ValueLinkInput {

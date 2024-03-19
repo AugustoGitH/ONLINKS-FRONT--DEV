@@ -165,8 +165,8 @@ export const TextInput = styled.div<TextInputProps>`
   }
   textarea{
     white-space: break-spaces;
-    overflow: hidden;
-    word-wrap: break-word;
+   overflow: hidden;
+    
   }
 
 `

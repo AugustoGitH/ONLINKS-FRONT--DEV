@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 
 export const HeaderLinkPage = styled.div`
+margin-top: 2rem;
   margin-bottom: calc(90px + 1rem);
         position: relative;
 
@@ -83,7 +84,20 @@ export const LinkPagesPanelPage = styled.div`
     .dash{
       width: 100%;
       padding: 2rem;
-   
+
+      .line-separator{
+       width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 1rem 0;
+        span{
+          width: 70%;
+          height: 2px;
+          background-color: ${({ theme }) => theme.colors.third.solid};
+          border-radius: 1rem;
+          opacity: 0;
+        }
+      }
       .link-pages-grid{
         margin-top: 2rem;
         width: 100%;
@@ -99,6 +113,7 @@ export const LinkPagesPanelPage = styled.div`
           align-items: center;
 
           button{
+            position: relative;
             background-color: transparent;
             border: 2px solid ${({ theme }) => theme.colors.third.solid};
             font-size: 2rem;
@@ -112,6 +127,33 @@ export const LinkPagesPanelPage = styled.div`
             opacity: .6;
             transition: .2s;
             font-size: 1.5rem;
+            .ballon-info{
+              position: absolute;
+              content: "Adicionar nova página de links";
+              width: 200px;
+              top: 3.5rem;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: ${({ theme }) => theme.font.size.paragraphs.xxsm[0]};
+             
+              text-align: center;
+              background-color: ${({ theme }) => theme.colors.third.solid};
+              color: ${({ theme }) => theme.colors.dark.solid};
+              padding: .2rem 0;
+              border-radius: .4rem;
+              pointer-events: none;
+              &::after{
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: -5px;
+              transform: translateX(-50%) rotate(135deg);
+              
+              width: 10px;
+              height: 10px;
+              background-color: ${({ theme }) => theme.colors.third.solid};
+              }
+            }
             &:hover{
               opacity: 1;
               transform: scale(1.04);

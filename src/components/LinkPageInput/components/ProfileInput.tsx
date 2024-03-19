@@ -40,6 +40,10 @@ export default function ProfileInput({ error = false, helperText, id, maxSizeInB
       onChange(null)
     }
   }, [reset])
+
+  useEffect(() => {
+    setPreview(src ?? null)
+  }, [src])
   return (
     <S.ProfileInput>
       <label htmlFor={id}>

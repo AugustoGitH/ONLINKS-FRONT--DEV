@@ -7,6 +7,10 @@ interface LinkPagesStore {
   setLinkPages: (linkPages: LinkPageAndLinksPublic[]) => void;
   addLinkPage: (linkPage: LinkPageAndLinksPublic) => void;
   deleteLinkPage: (linkPageId: string) => void;
+  updateLinkPage: (
+    linkPageId: string,
+    linkPage: LinkPageAndLinksPublic
+  ) => void;
 }
 
 const useLinkPagesStore = create<LinkPagesStore>((set) => ({
@@ -20,6 +24,22 @@ const useLinkPagesStore = create<LinkPagesStore>((set) => ({
     set((state) => ({
       linkPages: [...(state.linkPages ?? []), linkPage],
     }));
+  },
+  updateLinkPage: (linkPageId, linkPage) => {
+    set((state) => {
+      const { linkPages } = state;
+      if (!linkPages) return {};
+      const indexLinkPage =
+        linkPages.findIndex((linkPage) => linkPage._id === linkPageId) ?? null;
+      if (indexLinkPage === -1) return {};
+      linkPages[indexLinkPage] = {
+        ...linkPages[indexLinkPage],
+        ...linkPage,
+      };
+      return {
+        linkPages,
+      };
+    });
   },
   deleteLinkPage: (linkPageId) => {
     set((state) => ({

@@ -9,7 +9,6 @@ const DataLoaderLinkPages = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data)
       setLinkPages(data)
     }
   }, [data, setLinkPages])

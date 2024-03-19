@@ -12,26 +12,25 @@ import useLinkPagesPanel from "./hooks/useLinkPagesPanel"
 import ModalIcons from "@/components/ModalIcons"
 import HeaderLinkPage from "./components/HeaderLinkPage"
 import { Dialog } from "@/components/Dialog"
+import useLinkPagesStore from "@/stores/link-pages/useLinkPagesStore"
+import sortItemsInArray from "@/helpers/sort-items-in-array"
+import { ValueLinkInput, ValueLinkPageInput } from "@/components/LinkPageInput/types"
 
 
 
 
 export default function LinkPagesPanelPage() {
   const { user } = useAuthContext()
-  const { addLinkPage, errors, dialogDeleteLinkPage, handleToggleShowDialogDeleteLinkPage, assignDefaultLinkPage, saveLinkPage, deleteLinkPage, changeLinkPage, isLimitLinkPages,
-    linkPages } = useLinkPagesPanel(user)
+  const { addLinkPage, errors, cancelLinkPage, dialogDeleteLinkPage, handleToggleShowDialogDeleteLinkPage, assignDefaultLinkPage, saveLinkPage, deleteLinkPage, changeLinkPage, isLimitLinkPages,
+    linkPageInputs } = useLinkPagesPanel()
+  const [
+    linkPagesInStore,
+  ] = useLinkPagesStore((state) => [
+    state.linkPages,
+  ]);
 
-
-
-  // useEffect(() => {
-  //   api.get('/link-page/restrict/v1').then(data => {
-  //     console.log(data)
-  //   })
-  // }, [])
-
-
-
-
+  const linkPageDefault = linkPagesInStore?.find(linkPage => linkPage.isDefault)
+  const linkPagesNotFound = linkPagesInStore?.filter(linkPage => !linkPage.isDefault)
 
   return (
     <S.LinkPagesPanelPage>
@@ -39,38 +38,51 @@ export default function LinkPagesPanelPage() {
         <VerticalNavBarPanel>
           <div className="dash">
             <h3>Página de Links</h3>
-            {/* <HeaderLinkPage
+            <HeaderLinkPage
               def={{
                 banner: {
-                  src: profileDefault?.banner as File,
+                  src: linkPageDefault?.banner ?? "",
                   alt: ''
                 },
                 profile: {
-                  src: profileDefault?.profile as File,
+                  src: linkPageDefault?.profile ?? "",
                   alt: ''
                 }
               }}
-            /> */}
+              secondary={linkPagesNotFound?.map(linkPage => ({
+                banner: {
+                  alt: "",
+                  src: linkPage.banner ?? ""
+                },
+                profile: {
+                  alt: "",
+                  src: linkPage.profile ?? ""
+                }
+              }))}
+            />
+            {/* <div className="line-separator"><span /></div> */}
             <div className="link-pages-grid">
               {
-                linkPages && Object.entries(linkPages).map(([id, linkPage]) => (
+                linkPageInputs && (sortItemsInArray(Object.entries(linkPageInputs).map(([id, linkPage]) => ({ id, ...linkPage })), "order") as Array<ValueLinkPageInput & { id: string }>).map((linkPageIn) => (
                   <LinkPageInput
-                    errors={errors[id]}
-                    onSave={(linkPage) => saveLinkPage(id, linkPage)}
-                    onAssignDefault={state => assignDefaultLinkPage(id, state)}
-                    onChange={value => changeLinkPage(id, value)}
-                    key={id}
+                    errors={errors[linkPageIn.id]}
+                    onCancel={linkPage => cancelLinkPage(linkPageIn.id, linkPage)}
+                    onSave={(linkPage) => saveLinkPage(linkPageIn.id, linkPage)}
+                    onAssignDefault={state => assignDefaultLinkPage(linkPageIn.id, state)}
+                    onChange={value => changeLinkPage(linkPageIn.id, value)}
+                    key={linkPageIn.id}
                     value={{
-                      banner: linkPage.banner,
-                      description: linkPage.description,
-                      isDefault: linkPage.isDefault,
-                      links: linkPage.links,
-                      profile: linkPage.profile,
-                      subTitle: linkPage.subTitle,
-                      title: linkPage.title
+                      banner: linkPageIn.banner,
+                      description: linkPageIn.description,
+                      isDefault: linkPageIn.isDefault,
+                      links: linkPageIn.links,
+                      profile: linkPageIn.profile,
+                      subTitle: linkPageIn.subTitle,
+                      title: linkPageIn.title,
+                      order: linkPageIn.order
                     }}
                     maxLinkCreation={calculateLinkCountPermissions(user!.permissions)}
-                    onDelete={() => handleToggleShowDialogDeleteLinkPage(id)}
+                    onDelete={() => handleToggleShowDialogDeleteLinkPage(linkPageIn.id)}
                   />
                 ))
               }
@@ -78,11 +90,12 @@ export default function LinkPagesPanelPage() {
               {
                 isLimitLinkPages && (
                   <div className='template-add-link-page'>
-                    <TitleItem title="ola">
-                      <button onClick={addLinkPage}>
-                        <Icon icon={'bx bx-plus'} />
-                      </button>
-                    </TitleItem>
+                    <button onClick={addLinkPage}>
+                      <Icon icon={'bx bx-plus'} />
+                      <div className="ballon-info">
+                        Adicionar nova <strong>Página de Links</strong>
+                      </div>
+                    </button>
                   </div>
                 )
               }

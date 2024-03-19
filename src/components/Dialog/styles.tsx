@@ -1,3 +1,4 @@
+import scaleUpPresence from "@/keyframes/scale-up-presence";
 import styled from "styled-components";
 
 
@@ -13,6 +14,7 @@ export const DialogCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
   .card-content{
     width: 400px;
     background-color: ${({ theme }) => theme.colors.primary.weak};
@@ -21,6 +23,7 @@ export const DialogCard = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    animation: ${scaleUpPresence} .2s ease;
   }
 
 `

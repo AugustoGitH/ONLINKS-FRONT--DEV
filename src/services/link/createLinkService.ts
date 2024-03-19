@@ -3,7 +3,7 @@ import { api } from "@/settings/api/axios";
 import { routesAPILink } from "@/settings/api/routes/link";
 import { CreateLink, Link } from "@/types/link";
 
-interface CreateLinkService {
+export interface CreateLinkService {
   message: string;
   link: Link | null;
   created: boolean;

@@ -21,9 +21,7 @@ interface BannerInputProps {
 }
 
 export default function BannerInput({ helperText, error = false, id, maxSizeInBytes, src, onChange = () => { }, reset = false }: BannerInputProps) {
-
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(src ?? null)
-
   const handleChangeInputFile = (ev: ChangeEvent<HTMLInputElement>) => {
     const file = ev.target.files?.[0]
     onChange(file ?? null)
@@ -36,6 +34,10 @@ export default function BannerInput({ helperText, error = false, id, maxSizeInBy
       setPreview(base64)
     })
   }
+
+  useEffect(() => {
+    setPreview(src ?? null)
+  }, [src])
   useEffect(() => {
     if (reset) {
       setPreview(null)

@@ -10,8 +10,9 @@ import TextInput from "./components/TextInput"
 import { useEffect, useId, useState } from "react"
 import ButtonInput from "./components/ButtonInput"
 import Icon from "../Icon"
-import { ErrorsLinkPage, ValueLinkPageInput } from "./types"
+import { ErrorsLinkPage, ValueLinkInput, ValueLinkPageInput } from "./types"
 import useLinkPageInput from "./hooks/useLinkPageInput"
+import sortItemsInArray from "@/helpers/sort-items-in-array"
 
 interface LinkPageInputProps {
   maxLinkCreation?: number,
@@ -20,6 +21,7 @@ interface LinkPageInputProps {
   onDelete?: () => void,
   onAssignDefault?: (state: boolean) => void,
   onSave?: (value?: ValueLinkPageInput) => Promise<boolean>,
+  onCancel?: (value?: ValueLinkPageInput) => Promise<boolean>,
   errors?: ErrorsLinkPage
 }
 
@@ -27,6 +29,7 @@ interface LinkPageInputProps {
 
 export default function LinkPageInput({
   onSave = async () => false,
+  onCancel = async () => false,
   onAssignDefault = () => { },
   onDelete = () => { },
   maxLinkCreation = 1,
@@ -34,11 +37,12 @@ export default function LinkPageInput({
   errors,
   onChange = () => { } }: LinkPageInputProps) {
   const [idProfile, idBanner] = [useId(), useId()]
-  const { addLink, isLimited, assignDefault, deleteLink, handleSaveLinkPage, handleToggleShowSaveConfirm, selectInput, showSaveConfirm } = useLinkPageInput({
+  const { addLink, isLimited, assignDefault, deleteLink, handleCancelLinkPage, handleSaveLinkPage, handleToggleShowSaveConfirm, selectInput, showSaveConfirm } = useLinkPageInput({
     events: {
       onAssignDefault,
       onChange,
-      onSave
+      onSave,
+      onCancel
     },
     maxLinkCreation,
     value
@@ -105,22 +109,22 @@ export default function LinkPageInput({
       </div>
       <div className="btns">
         {
-          value?.links && Object.entries(value.links).map(([id, link]) => (
+          value?.links && (sortItemsInArray(Object.entries(value.links).map(([id, link]) => ({ id, ...link })), "order") as Array<ValueLinkInput & { id: string }>).map((link) => (
             <ButtonInput
-              onDelete={() => deleteLink(id)}
+              onDelete={() => deleteLink(link.id)}
               onChange={valueCh => selectInput('links', {
                 ...(value?.links ?? {}),
-                [id]: {
+                [link.id]: {
                   ...(value.links && {
                     ...link,
                     ...valueCh
                   })
                 }
               })}
-              error={!!errors?.links?.[id]}
-              helperText={errors?.links?.[id]?.message}
+              error={!!errors?.links?.[link.id]}
+              helperText={errors?.links?.[link.id]?.message}
               value={link}
-              key={id}
+              key={link.id}
               maxLengthTitle={33}
             />
           ))
@@ -139,7 +143,7 @@ export default function LinkPageInput({
         showSaveConfirm && (
           <div className='btns-confirm-save'>
             <button className="btn-save" onClick={handleSaveLinkPage}>Salvar</button>
-            <button className="btn-cancel" onClick={handleToggleShowSaveConfirm}>Cancelar</button>
+            <button className="btn-cancel" onClick={handleCancelLinkPage}>Cancelar</button>
           </div>
         )
       }

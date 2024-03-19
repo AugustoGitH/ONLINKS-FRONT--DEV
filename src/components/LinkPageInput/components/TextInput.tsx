@@ -28,12 +28,19 @@ export default function TextInput({
   }
 
 
+
   const handleChangeTextarea: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     onChange(e.target.value)
     e.target.style.height = 'auto'
     e.target.style.height = (e.target.scrollHeight) + 'px'
   }
-
+  useEffect(() => {
+    // Redimensionar o textarea quando o texto mudar
+    if (type === "p" && inputRef.current instanceof HTMLTextAreaElement) {
+      inputRef.current.style.height = "auto"
+      inputRef.current.style.height = inputRef.current.scrollHeight + "px"
+    }
+  }, [text, type])
 
   return (
     <S.TextInput type={type} {...props}>

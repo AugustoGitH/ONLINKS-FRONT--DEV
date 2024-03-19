@@ -7,13 +7,14 @@ interface UseLinkPageInput {
   events: {
     onChange: (value: ValueLinkPageInput) => void;
     onSave: (value?: ValueLinkPageInput | undefined) => Promise<boolean>;
+    onCancel: (value?: ValueLinkPageInput | undefined) => Promise<boolean>;
     onAssignDefault: (state: boolean) => void;
   };
 }
 const useLinkPageInput = ({
   value,
   maxLinkCreation,
-  events: { onChange, onSave, onAssignDefault },
+  events: { onChange, onSave, onAssignDefault, onCancel },
 }: UseLinkPageInput) => {
   const isLimited =
     value?.links === null ||
@@ -30,6 +31,12 @@ const useLinkPageInput = ({
 
   const handleSaveLinkPage = async () => {
     const isValid = await onSave(value);
+    if (!isValid) return;
+    setShowSaveConfirm(false);
+  };
+
+  const handleCancelLinkPage = async () => {
+    const isValid = await onCancel(value);
     if (!isValid) return;
     setShowSaveConfirm(false);
   };
@@ -85,6 +92,7 @@ const useLinkPageInput = ({
     addLink,
     selectInput,
     handleSaveLinkPage,
+    handleCancelLinkPage,
     handleToggleShowSaveConfirm,
     showSaveConfirm,
     isLimited,

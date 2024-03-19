@@ -5,11 +5,16 @@ import { routesAPILinkPage } from "@/settings/api/routes/link-page";
 import { CreateLinkPage, LinkPagePublic } from "@/types/link-page";
 import createLinkPageService from "./createLinkPageService";
 import { CreateLink, Link } from "@/types/link";
-import createLinkService from "../link/createLinkService";
+import createLinkService, {
+  CreateLinkService,
+} from "../link/createLinkService";
 interface CreateLinkPageAndLinksService {
   message: string;
   linkPage: LinkPagePublic | null;
-  links: Link[] | null;
+  links: {
+    created: Link[];
+    notCreated: CreateLinkService[];
+  };
   created: boolean;
 }
 
@@ -19,49 +24,49 @@ const createLinks = async (links: CreateLink[]) => {
 
 const createLinkPageAndLinksService = async (
   linkPage: CreateLinkPage,
-  links: CreateLink[]
+  links: (linkPageId: string) => CreateLink[]
 ): Promise<CreateLinkPageAndLinksService> => {
-  try {
-    const {
-      created,
-      linkPage: linkPageCreated,
-      message,
-    } = await createLinkPageService({
-      isDefault: linkPage.isDefault,
-      title: linkPage.title!,
-      banner: linkPage.banner,
-      description: linkPage.description ?? undefined,
-      profile: linkPage.profile,
-      subTitle: linkPage.subTitle ?? undefined,
-    });
+  const {
+    created,
+    linkPage: linkPageCreated,
+    message,
+  } = await createLinkPageService(linkPage);
 
-    if (created && linkPageCreated) {
-      if (links.length === 0) {
-        return {
-          created: true,
-          linkPage: linkPageCreated,
-          links: [],
-          message: "Link page created successfully",
-        };
-      }
-
-      const results = await createLinks(links);
-    } else {
+  if (created && linkPageCreated) {
+    if (links.length === 0) {
+      return {
+        created: true,
+        linkPage: linkPageCreated,
+        links: {
+          created: [],
+          notCreated: [],
+        },
+        message: "Link page created successfully",
+      };
     }
+
+    const results = await createLinks(links(linkPageCreated._id));
 
     return {
       created: true,
-      linkPage: data,
       message: "Link page created successfully",
+      linkPage: linkPageCreated,
+      links: {
+        created: results
+          .filter((link) => link.created)
+          .map((link) => link.link!),
+        notCreated: results.filter((link) => !link.created),
+      },
     };
-  } catch (error) {
-    console.error(error);
+  } else {
     return {
-      message:
-        verifyAxiosErrorMessage(error) ||
-        "An internal server error occurred when create link Page!",
       created: false,
+      message,
       linkPage: null,
+      links: {
+        created: [],
+        notCreated: [],
+      },
     };
   }
 };
